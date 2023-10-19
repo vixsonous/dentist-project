@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model balance {
+  payment_id      Int      @id @default(autoincrement())
+  patient_id      Int
+  date            DateTime @db.Date
+  total_cost      Decimal  @db.Decimal(10, 2)
+  amount_paid     Decimal  @db.Decimal(10, 2)
+  balance         Decimal  @db.Decimal(10, 2)
+  remarks         String   @db.VarChar(255)
+  side_payment_id Int
+}
+
+model clinic_users {
+  user_id        Int                       @id @default(autoincrement())
+  name           String                    @db.VarChar(255)
+  username       String                    @db.VarChar(128)
+  password       String                    @db.VarChar(128)
+  occupation     clinic_users_occupation
+  user_specialty String                    @db.VarChar(128)
+  access_level   clinic_users_access_level
+  email          String                    @db.VarChar(128)
+  contact        String                    @db.VarChar(11)
+}
+
+model dental_service_record {
+  dental_service_record_id Int      @id @default(autoincrement())
+  patient_id               Int
+  doctor_id                Int
+  date                     DateTime @db.Date
+  diagnosis                String   @db.VarChar(128)
+  treatment                String   @db.VarChar(128)
+  tooth_no                 Int
+  remarks                  String   @db.VarChar(255)
+}
+
+model image_attachments {
+  image_id        Int                               @id @default(autoincrement())
+  patient_id      Int
+  image_url       String                            @db.VarChar(255)
+  attachment_xray image_attachments_attachment_xray
+}
+
+model messages {
+  message_id Int             @id @default(autoincrement())
+  to_id      Int
+  from_id    Int
+  time_sent  DateTime        @db.DateTime(0)
+  subject_id Int
+  message    String          @db.Text
+  opened     messages_opened
+}
+
+model odontogram {
+  note_id          Int                 @id @default(autoincrement())
+  patient_id       Int
+  tooth_no         Int
+  date             DateTime            @db.Date
+  doc_id           Int
+  diagnosis_observ String              @db.Text
+  treatment        String              @db.Text
+  remarks          String              @db.Text
+  position         odontogram_position
+  color            String              @db.VarChar(128)
+}
+
+model patient_record {
+  patient_id          Int                              @id @default(autoincrement())
+  patient_name        String                           @db.VarChar(100)
+  patient_profile_pic String                           @db.VarChar(128)
+  patient_address     String                           @db.VarChar(50)
+  patient_email       String                           @db.VarChar(50)
+  patient_contact     String                           @db.VarChar(15)
+  date_of_birth       DateTime                         @db.Date
+  patient_age         Int
+  patient_sex         patient_record_patient_sex
+  patient_status      patient_record_patient_status
+  patient_occupation  String                           @db.VarChar(50)
+  patient_reference   String                           @db.VarChar(50)
+  reference_contact   String                           @db.VarChar(128)
+  diabetes            patient_record_diabetes
+  bleeding_tendency   patient_record_bleeding_tendency
+  drug_sensitivity    patient_record_drug_sensitivity
+  heart_condition     patient_record_heart_condition
+  rheumatic_fever     patient_record_rheumatic_fever
+  blood_pressure      patient_record_blood_pressure
+  remarks             String                           @db.VarChar(500)
+}
+
+model scheduled_appointments {
+  id                  Int                             @id @default(autoincrement())
+  patient_id          Int
+  date_of_appointment DateTime                        @db.Date
+  start_time          DateTime                        @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  waitlist            scheduled_appointments_waitlist
+  event               String                          @db.VarChar(255)
+}
+
+model supplies_inventory {
+  supply_id         Int    @id @default(autoincrement())
+  supply_name       String @db.VarChar(255)
+  supply_quantity   Int
+  supplied_value    Int
+  supplier          String @db.VarChar(255)
+  history_supply_id Int
+}
+
+model tooth_condition {
+  condition_id   Int    @id @default(autoincrement())
+  patient_id     Int
+  tooth_id       Int
+  condition_name String @db.VarChar(128)
+  tooth_center   String @db.VarChar(50)
+  tooth_front    String @db.VarChar(50)
+  tooth_back     String @db.VarChar(50)
+  tooth_left     String @db.VarChar(50)
+  tooth_right    String @db.VarChar(50)
+}
+
+model treatments {
+  treatment_id   Int                 @id @default(autoincrement())
+  treatment_name String              @db.VarChar(128)
+  is_abbrv       treatments_is_abbrv
+}
+
+enum treatments_is_abbrv {
+  true @map("1")
+  false @map("0")
+}
+
+enum image_attachments_attachment_xray {
+  false @map("0")
+  true @map("1")
+}
+
+enum clinic_users_occupation {
+  Doctor
+  Secretary
+  Admin
+}
+
+enum scheduled_appointments_waitlist {
+  true @map("1")
+  false @map("0")
+}
+
+enum clinic_users_access_level {
+  lv1 @map("1")
+  lv2 @map("2")
+  lv3 @map("3")
+}
+
+enum messages_opened {
+  false @map("0")
+  true @map("1")
+}
+
+enum odontogram_position {
+  Center
+  Front
+  Back
+  Left
+  Right
+}
+
+enum patient_record_patient_sex {
+  M
+  F
+}
+
+enum patient_record_patient_status {
+  Married
+  Single
+  Divorced
+  Widowed
+}
+
+enum patient_record_diabetes {
+  false @map("0")
+  true @map("1")
+}
+
+enum patient_record_bleeding_tendency {
+  false @map("0")
+  true @map("1")
+}
+
+enum patient_record_drug_sensitivity {
+  false @map("0")
+  true @map("1")
+}
+
+enum patient_record_heart_condition {
+  false @map("0")
+  true @map("1")
+}
+
+enum patient_record_rheumatic_fever {
+  false @map("0")
+  true @map("1")
+}
+
+enum patient_record_blood_pressure {
+  false @map("0")
+  true @map("1")
+}
