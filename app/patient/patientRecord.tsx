@@ -6,10 +6,10 @@ import Link from "next/link"
 import { Dispatch, SetStateAction, useState } from "react"
 
 type PatientRecordProps = {
-    setOpen: Dispatch<SetStateAction<boolean>>
+    patient_id: String
 }
 
-export default function PatientRecord() {
+export default function PatientRecord({patient_id}: PatientRecordProps) {
     const prisma = new PrismaClient();
     const [open, setOpen] = useState(false);
     return (
@@ -25,7 +25,7 @@ export default function PatientRecord() {
                 <div className="flex gap-2">
                     <Link href="/patient/dentalrecord">Dental Service Record</Link>
                     <span>|</span>
-                    <Link href="/patient/odontogram">Odontogram</Link>
+                    <Link href={`/patient/odontogram/${patient_id}`}>Odontogram</Link>
                     <span>|</span>
                     <Link href="/patient/dentalrecord">Previous History</Link>
                     <span>|</span>

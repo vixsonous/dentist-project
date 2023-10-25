@@ -1,13 +1,16 @@
 "use client";
 import Menu from "@/app/global-components/Menu";
-import Odontogram from "./odontogram";
+import Odontogram from "../odontogram";
 import Link from "next/link";
-import { useState } from "react";
+import { FC, useState } from "react";
 import Modal from "@/app/global-components/Modal";
-import PatientRecord from "../patientRecord";
+import PatientRecord from "../../patientRecord";
 
+interface pageProps {
+    params: {patient_id: String}
+}
 
-export default function Orthodontics() {
+const Orthodontics:FC<pageProps>  = ({params}) => {
     const [open, setOpen] = useState(false);
 
     return (
@@ -15,8 +18,8 @@ export default function Orthodontics() {
             <Menu />
             <div className="flex min-h-screen flex-col justify-center items-center">
                 <div className="container flex flex-col gap-1">
-                    <PatientRecord />
-                    <Odontogram />
+                    <PatientRecord patient_id={params.patient_id}/>
+                    <Odontogram patient_id={params.patient_id} />
                 </div>
             </div>
             <Modal open={open} onClose={() => setOpen(false)}>
@@ -25,3 +28,5 @@ export default function Orthodontics() {
         </div>
     )
 }
+
+export default Orthodontics;
