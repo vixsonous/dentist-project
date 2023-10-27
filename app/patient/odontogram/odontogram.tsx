@@ -15,7 +15,7 @@ export default function Odontogram({patient_id} : pageProps) {
         [85,84,83,82,81],[71,72,73,74,75]
     ]
 
-    const [open,setOpen] = useState(true);
+    const [open,setOpen] = useState(false);
     const [children, setChildren] = useState(<h1></h1>);
 
     const onClose = () => {
@@ -25,32 +25,27 @@ export default function Odontogram({patient_id} : pageProps) {
     return (
         <div className="flex gap-10 justify-center items-center p-2 border-2 border-gray-300">
             <div className="1-grp flex flex-col">
-                <div className="1-row flex justify-end">
-                    {odntArr[0].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="2-row flex justify-end">
-                    {odntArr[2].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="2-row flex justify-end">
-                    {odntArr[4].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="2-row flex justify-end">
-                    {odntArr[6].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
+                {
+                    [0,2,4,6].map((el) => {
+                        return (
+                            <div className="1-row flex justify-end">
+                                {odntArr[el].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
+                            </div>
+                        )
+                    })
+                }
             </div>
             <div className="2-grp flex-col items-center">
-                <div className="1-row flex">
-                    {odntArr[1].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="1-row flex ">
-                    {odntArr[3].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="1-row flex ">
-                    {odntArr[5].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
-                <div className="1-row flex">
-                    {odntArr[7].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
-                </div>
+                {
+                    [1,3,5,7].map((el) => {
+                        return (
+                            <div className="1-row flex">
+                                {odntArr[el].map((x) => <Tooth key={x} setOpen={setOpen} patient_id={patient_id} setChildren={setChildren} toothNo={x}/>)}
+                            </div>
+                        )
+                    })
+                }
+                
             </div>
             <Modal open={open} onClose={onClose}>
                 {children}
