@@ -1,4 +1,5 @@
-import { SetStateAction, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
+import Modal from "./Modal";
 
 type MonthEnum = {
     [key: string] : string
@@ -7,54 +8,36 @@ type MonthEnum = {
 export default function Calendar() {
 
     const [curDays, setCurDays] = useState(
+    <>
+    <div className="absolute top-20 left-40">
+    <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+    </svg>
+    </div>
+    </>
+    );
+    const [apptSched, setApptSched] = useState(
         <>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">27</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">30</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">29</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">28</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">1</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">2</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">3</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">4</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">5</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">6</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">7</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">8</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">9</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">10</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">11</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">12</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">13</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">14</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">15</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">16</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">17</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">18</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">19</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">20</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">21</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">22</a>
-        <a href="#" className="dayEl hover:bg-indigo-600 rounded-md p-2 bg-indigo-500 text-white">23</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">24</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">25</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">26</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">27</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">28</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">29</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">30</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2">31</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">1</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">2</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">3</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">4</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">5</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">6</a>
-        <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">7</a>
+        <div className="">
+        <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+        </svg>
+        </div>
         </>
     );
 
     const [curMonth, setCurMonth] = useState(new Date().getMonth() + 1);
-    const [curYr, setCurYr] = useState(2023);
+    const [curYr, setCurYr] = useState(new Date().getFullYear());
+    const [open,setOpen] = useState(false);
+
+    const apptDt = (day:Number, month:Number, year:Number) => {
+        console.log(day);
+        console.log(month);
+        console.log(year);
+        setOpen(!open)
+    }
 
     const changeDt = (curM:SetStateAction<number>, curY:SetStateAction<number>) => {
         const beforeDt = new Date(curYr, curMonth, 0);
@@ -74,22 +57,26 @@ export default function Calendar() {
             <>
             {
                 beforeDaysEl.toReversed().map((el) => {
-                    return <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{noBeforeDays - el}</a>
+                    return <a key={el} href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{noBeforeDays - el}</a>
                 })
             }
             {
                 daysEl.map((el) => {
-                    return <a href="#" className={`dayEl ${ (el + 1) === new Date().getDate() &&  curDate.getMonth() === new Date().getMonth() ? 'hover:bg-indigo-600 rounded-md p-2 bg-indigo-500 text-white' : 'hover:bg-indigo-100 rounded-md p-2'}`}>{el + 1}</a>
+                    return <a key={el} onClick={() => apptDt(el + 1, curDate.getMonth() + 1, curDate.getFullYear())} href="#" className={`dayEl ${ (el + 1) === new Date().getDate() &&  curDate.getMonth() === new Date().getMonth() ? 'hover:bg-indigo-600 rounded-md p-2 bg-indigo-500 text-white' : 'hover:bg-indigo-100 rounded-md p-2'}`}>{el + 1}</a>
                 })
             }
             {
                 remaining.map((el) => {
-                    return <a href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{el + 1}</a>
+                    return <a key={el} href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{el + 1}</a>
                 })
             }
             </>
         )
     }
+
+    useEffect(() => {
+        changeDt(curMonth, curYr);
+    },[]);
 
     const nextMonth = () => {
         const curM = curMonth + 1 <= 12 ? curMonth + 1 : 1;
@@ -118,6 +105,7 @@ export default function Calendar() {
         12 : 'December',
     }
     return (
+        <>
         <div className="bg-white shadow-xl overflow-hidden rounded-lg mx-auto text-gray-900 text-center">
             <div className="flex items-center justify-around px-4 py-4">
                 <button onClick={prevMonth} className="p-2 rounded-md text-indigo-600">
@@ -128,7 +116,7 @@ export default function Calendar() {
                 <svg className="w-3 h-3 stroke-current" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
-            <div className="grid grid-cols-7 grid-col-dense grid-rows-6 p-2 gap-1">
+            <div className="relative grid grid-cols-7 grid-col-dense grid-rows-6 p-2 gap-1">
                 <div className="text-indigo-600">Sun</div>
                 <div className="text-indigo-600">Mon</div>
                 <div className="text-indigo-600">Tue</div>
@@ -138,6 +126,10 @@ export default function Calendar() {
                 <div className="text-indigo-600">Sat</div>
                 {curDays}
             </div>
-            </div>
+        </div>
+        <Modal open={open} onClose={() => setOpen(false)}>
+            {apptSched}
+        </Modal>
+        </>
         )
 }
