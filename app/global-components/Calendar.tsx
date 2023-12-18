@@ -5,6 +5,18 @@ type MonthEnum = {
     [key: string] : string
 }
 
+interface Schedule {
+    id: Number,
+    date_of_appointment: String,
+    event: String,
+    patient_id: String,
+    start_time: String,
+    waitlist: String,
+    patient_name: String,
+    patient_profile_pic: String,
+    patient_contact: String,
+}
+
 export default function Calendar() {
 
     const [curDays, setCurDays] = useState(
@@ -32,11 +44,39 @@ export default function Calendar() {
     const [curYr, setCurYr] = useState(new Date().getFullYear());
     const [open,setOpen] = useState(false);
 
-    const apptDt = (day:Number, month:Number, year:Number) => {
-        console.log(day);
-        console.log(month);
-        console.log(year);
+    const apptDt = async (day:Number, month:Number, year:Number) => {
         setOpen(!open)
+
+        const appt = await fetch(`/api/appointment-sched/?dy=${day}&mnth=${month}&yr=${year}`).then((res) => res.json());
+        const apptSched = appt.responseBody
+        
+        setApptSched(
+            <>
+            <table>
+                <thead>
+                    <tr>
+                        <th className="text-left">Patient</th>
+                        <th className="text-center">Contact</th>
+                        <th className="text-right">Start Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {apptSched.map((el:Schedule) => {
+                        const stTime = new Date(String(el.start_time));
+                        const stTimeStr = stTime.getUTCHours() > 12 ? `${("0" + (stTime.getUTCHours() - 12)).slice(-2)}:${("0" + stTime.getUTCMinutes()).slice(-2)} PM` : `${("0" + stTime.getUTCHours()).slice(-2)}:${("0" + stTime.getUTCMinutes()).slice(-2)} ${stTime.getUTCHours() == 12 ? 'PM' : 'AM'}`
+                        return (
+                            <tr>
+                                <td className="text-left">{el.patient_name}</td>
+                                <td className="text-center">{el.patient_contact}</td>
+                                <td className="text-right">{stTimeStr}</td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+            
+            </>
+        )
     }
 
     const changeDt = (curM:SetStateAction<number>, curY:SetStateAction<number>) => {
@@ -128,7 +168,13 @@ export default function Calendar() {
             </div>
         </div>
         <Modal open={open} onClose={() => setOpen(false)}>
-            {apptSched}
+            <div className="flex flex-col gap-1">
+                <div className="pr-96">Scheduled Appointments</div>
+                <hr />
+                <div className="flex flex-col gap-1">
+                    {apptSched}
+                </div>
+            </div>
         </Modal>
         </>
         )
