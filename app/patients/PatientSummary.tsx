@@ -1,57 +1,70 @@
-export default function PatientSummary() {
+import { image_attachments, patient_record } from "@prisma/client"
+
+interface pageProps {
+    curPatient: patient_record
+    images: image_attachments[]
+}
+
+export default function PatientSummary({ curPatient, images }: pageProps) {
+
+    const image_attch = images.find(elem => elem.attachment_xray === "false")
+    const xray_attch = images.find(elem => elem.attachment_xray === "true")
+
+    console.log(image_attch)
+    console.log(xray_attch)
     return (
         <section className="flex flex-col gap-5">
             <div className="title flex text-xl items-center justify-between pl-4 pr-4">
                 <h1>Patient Summary</h1>
-                <h1>File No: 0041</h1>
+                <h1>File No: {String(curPatient.patient_id).padStart(4, '0')}</h1>
             </div>
             <hr />
             <div className="flex justify-center items-center flex-col gap-1">
-                <img className="w-40 h-40 rounded-full" src="https://hips.hearstapps.com/hmg-prod/images/cute-photos-of-cats-looking-at-camera-1593184780.jpg?crop=0.6672958942897593xw:1xh;center,top&resize=980:*"/>
-                <p className="text-xl mt-5">Victor Chiong</p>
-                <p className="text-sm">Hansoy, Kaosdke Koke Rd. Kaogdot, Cebu City, Cebu</p>
+                <img className="w-40 h-40 rounded-full" src="https://hips.hearstapps.com/hmg-prod/images/cute-photos-of-cats-looking-at-camera-1593184780.jpg?crop=0.6672958942897593xw:1xh;center,top&resize=980:*" />
+                <p className="text-xl mt-5">{curPatient.patient_name}</p>
+                <p className="text-sm">{curPatient.patient_address}</p>
             </div>
             <div className="header flex justify-center mt-10">
                 <div className="info-1 w-3/4 flex gap-4">
                     <div className="flex flex-col gap-2 w-full">
                         <div className="flex justify-between">
                             <p>Email: </p>
-                            <p>cjvicro@gmail.com</p>
+                            <p>{curPatient.patient_email}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Contact No: </p>
-                            <p>09672510357</p>
+                            <p>{curPatient.patient_contact}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Date of Birth: </p>
-                            <p>1998-05-25</p>
+                            <p>{new Date(curPatient.date_of_birth).toDateString()}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Status: </p>
-                            <p>Married</p>
+                            <p>{curPatient.patient_status}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Age: </p>
-                            <p>20</p>
+                            <p>{curPatient.patient_age}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Sex: </p>
-                            <p>M</p>
+                            <p>{curPatient.patient_sex}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Occupation: </p>
-                            <p>Student</p>
+                            <p>{curPatient.patient_occupation}</p>
                         </div>
                         <hr />
                         <div className="flex justify-between">
                             <p>Reffered by: </p>
-                            <p>Dr. Tanya Stark</p>
+                            <p>{curPatient.patient_reference}</p>
                         </div>
                     </div>
                 </div>
@@ -86,7 +99,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Diabetes:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.diabetes === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -94,7 +111,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Bleeding Tendency:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.bleeding_tendency === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -102,7 +123,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Drug Sensitivity:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.drug_sensitivity === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -110,7 +135,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Heart Condition:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.heart_condition === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -118,7 +147,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Rheumatic Fever:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.rheumatic_fever === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -126,7 +159,11 @@ export default function PatientSummary() {
                         <div className="flex w-full justify-between mt-10">
                             <p>Blood Pressure:</p>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                {curPatient.blood_pressure === "false" ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                )}
                             </svg>
                         </div>
                     </div>
@@ -144,11 +181,23 @@ export default function PatientSummary() {
                     <div className="info-1 w-3/4 flex flex-col gap-4">
                         <div className="flex w-full justify-between mt-10">
                             <p>Attachments:</p>
-                            <p>attachemnt.jpg</p>
+                            {
+                                image_attch ? (
+                                    <p>{image_attch.image_url}</p>
+                                ) : (
+                                    <p>No Image attachment</p>
+                                )
+                            }
                         </div>
                         <div className="flex w-full justify-between mt-10">
                             <p>X-Ray:</p>
-                            <p>xray.jpg</p>
+                            {
+                                xray_attch ? (
+                                    <p>{xray_attch.image_url}</p>
+                                ) : (
+                                    <p>No X-Ray attachment</p>
+                                )
+                            }
                         </div>
                     </div>
                 </div>
