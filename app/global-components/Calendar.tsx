@@ -97,17 +97,17 @@ export default function Calendar() {
             <>
             {
                 beforeDaysEl.toReversed().map((el) => {
-                    return <a key={el} href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{noBeforeDays - el}</a>
+                    return <a key={el} href="#" className="dayEl hover:bg-[#AFC8AD] rounded-md p-2 text-gray-500">{noBeforeDays - el}</a>
                 })
             }
             {
                 daysEl.map((el) => {
-                    return <a key={el} onClick={() => apptDt(el + 1, curDate.getMonth() + 1, curDate.getFullYear())} href="#" className={`dayEl ${ (el + 1) === new Date().getDate() &&  curDate.getMonth() === new Date().getMonth() ? 'hover:bg-indigo-600 rounded-md p-2 bg-indigo-500 text-white' : 'hover:bg-indigo-100 rounded-md p-2'}`}>{el + 1}</a>
+                    return <a key={el} onClick={() => apptDt(el + 1, curDate.getMonth() + 1, curDate.getFullYear())} href="#" className={`dayEl ${ (el + 1) === new Date().getDate() &&  curDate.getMonth() === new Date().getMonth() ? 'hover:bg-[#12372A] rounded-md p-2 bg-[#436850] text-white' : 'hover:bg-[#AFC8AD] rounded-md p-2'}`}>{el + 1}</a>
                 })
             }
             {
                 remaining.map((el) => {
-                    return <a key={el} href="#" className="dayEl hover:bg-indigo-100 rounded-md p-2 text-gray-500">{el + 1}</a>
+                    return <a key={el} href="#" className="dayEl hover:bg-[#AFC8AD] rounded-md p-2 text-gray-500">{el + 1}</a>
                 })
             }
             </>
@@ -146,7 +146,7 @@ export default function Calendar() {
     }
     return (
         <>
-        <div className="bg-white shadow-xl overflow-hidden rounded-lg mx-auto text-gray-900 text-center">
+        <div className="bg-[#F2F1EB] shadow-xl overflow-hidden rounded-lg mx-auto text-center">
             <div className="flex items-center justify-around px-4 py-4">
                 <button onClick={prevMonth} className="p-2 rounded-md text-indigo-600">
                 <svg className="w-3 h-3 stroke-current" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg>
@@ -157,19 +157,18 @@ export default function Calendar() {
                 </button>
             </div>
             <div className="relative grid grid-cols-7 grid-col-dense grid-rows-6 p-2 gap-1">
-                <div className="text-indigo-600">Sun</div>
-                <div className="text-indigo-600">Mon</div>
-                <div className="text-indigo-600">Tue</div>
-                <div className="text-indigo-600">Wed</div>
-                <div className="text-indigo-600">Thu</div>
-                <div className="text-indigo-600">Fri</div>
-                <div className="text-indigo-600">Sat</div>
+                <div className="text-[#436850]">Sun</div>
+                <div className="text-[#436850]">Mon</div>
+                <div className="text-[#436850]">Tue</div>
+                <div className="text-[#436850]">Wed</div>
+                <div className="text-[#436850]">Thu</div>
+                <div className="text-[#436850]">Fri</div>
+                <div className="text-[#436850]">Sat</div>
                 {curDays}
             </div>
         </div>
-        <Modal open={open} onClose={() => setOpen(false)}>
+        <Modal title={"Scheduled Appointments"} open={open} onClose={() => setOpen(false)}>
             <div className="flex flex-col gap-1">
-                <div className="pr-96">Scheduled Appointments</div>
                 <hr />
                 <div className="flex flex-col gap-1">
                     {apptSched}

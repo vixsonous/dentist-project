@@ -20,7 +20,7 @@ export default function PatientSummary({ curPatient, images }: pageProps) {
             </div>
             <hr />
             <div className="flex justify-center items-center flex-col gap-1">
-                <img className="w-40 h-40 rounded-full" src="https://hips.hearstapps.com/hmg-prod/images/cute-photos-of-cats-looking-at-camera-1593184780.jpg?crop=0.6672958942897593xw:1xh;center,top&resize=980:*" />
+                <img className="w-40 h-40 rounded-full" src="https://i.kym-cdn.com/entries/icons/facebook/000/046/895/huh_cat.jpg" />
                 <p className="text-xl mt-5">{curPatient.patient_name}</p>
                 <p className="text-sm">{curPatient.patient_address}</p>
             </div>
@@ -185,7 +185,14 @@ export default function PatientSummary({ curPatient, images }: pageProps) {
                                 image_attch ? (
                                     <p>{image_attch.image_url}</p>
                                 ) : (
-                                    <p>No Image attachment</p>
+                                    <div className="flex flex-col gap-1">
+                                        <p className="flex justify-end">No Image attachment</p>
+                                        <div>
+                                            <label htmlFor="files" className="btn p-1 border border-1 border-black rounded">Select Image</label>
+                                            <input className="hidden" id="files" type="file" />
+                                        </div>
+
+                                    </div>
                                 )
                             }
                         </div>
@@ -195,7 +202,14 @@ export default function PatientSummary({ curPatient, images }: pageProps) {
                                 xray_attch ? (
                                     <p>{xray_attch.image_url}</p>
                                 ) : (
-                                    <p>No X-Ray attachment</p>
+                                    <div className="flex flex-col gap-1">
+                                        <p className="flex justify-end">No X-Ray attachment</p>
+                                        <div>
+                                            <label htmlFor="files" className="btn p-1 border border-1 border-black rounded">Select Image</label>
+                                            <input className="hidden" id="files" type="file" />
+                                        </div>
+
+                                    </div>
                                 )
                             }
                         </div>
