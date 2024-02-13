@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function AppointmentSched(req:NextApiRequest, res:NextApiResponse) {
+export default async function AppointmentSched(req: NextApiRequest, res: NextApiResponse) {
     const {
-        query: {dy,mnth,yr},
+        query: { dy, mnth, yr },
         method
     } = req;
 

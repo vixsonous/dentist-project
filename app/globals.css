@@ -24,8 +24,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
-    background-color: #EEE7DA;
-    color: #4F4A45;
+  background-color: #EEE7DA;
+  color: #4F4A45;
 }
 
 .wrapper {

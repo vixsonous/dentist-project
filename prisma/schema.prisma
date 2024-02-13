@@ -99,6 +99,7 @@ model scheduled_appointments {
   patient_id          Int
   date_of_appointment DateTime                        @db.Date
   start_time          DateTime                        @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  end_time          DateTime                        @default(dbgenerated("('00:00:00')")) @db.Time(0)
   waitlist            scheduled_appointments_waitlist
   event               String                          @db.VarChar(255)
 }

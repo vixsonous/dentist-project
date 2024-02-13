@@ -9,11 +9,11 @@ type PatientRecordProps = {
     patient_id: String
 }
 
-export default function PatientRecord({patient_id}: PatientRecordProps) {
+export default function PatientRecord({ patient_id }: PatientRecordProps) {
     const prisma = new PrismaClient();
     const [open, setOpen] = useState(false);
     return (
-        
+
         <div>
             <section className="flex items-center w-full gap-1 justify-between p-2 rounded border-2 border-gray-300">
                 <div className="min-w-screen">
@@ -34,7 +34,7 @@ export default function PatientRecord({patient_id}: PatientRecordProps) {
                     <Link href="/patient/dentalrecord">Balance</Link>
                 </div>
             </section>
-            <Modal open={open} onClose={() => setOpen(false)}>
+            <Modal title={"asdasd"} open={open} onClose={() => setOpen(false)}>
                 <h1>asdasd</h1>
             </Modal>
         </div>

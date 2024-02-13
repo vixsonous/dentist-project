@@ -14,18 +14,28 @@ function getPatients() {
     return prisma.patient_record.findMany();
 }
 
+function getDoctors() {
+    const prisma = new PrismaClient();
+    return prisma.clinic_users.findMany({
+        where: {
+            occupation: 'Doctor'
+        }
+    });
+}
+
 const patientMsOver = () => {
     console.log('mousever');
 }
 
 export default async function PatientsList() {
     const patients = await getPatients();
+    const doctors = await getDoctors();
 
-    
+
     return (
         <div>
             <Menu />
-            <Patients patient_list={patients}/>
+            <Patients patient_list={patients} doctor_list={doctors} />
         </div>
     )
 }

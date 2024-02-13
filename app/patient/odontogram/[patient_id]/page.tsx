@@ -7,10 +7,10 @@ import Modal from "@/app/global-components/Modal";
 import PatientRecord from "../../patientRecord";
 
 interface pageProps {
-    params: {patient_id: String}
+    params: { patient_id: String }
 }
 
-const Orthodontics:FC<pageProps>  = ({params}) => {
+const Orthodontics: FC<pageProps> = ({ params }) => {
     const [open, setOpen] = useState(false);
 
     return (
@@ -18,11 +18,11 @@ const Orthodontics:FC<pageProps>  = ({params}) => {
             <Menu />
             <div className="flex min-h-screen flex-col justify-center items-center">
                 <div className="container flex flex-col gap-1">
-                    <PatientRecord patient_id={params.patient_id}/>
+                    <PatientRecord patient_id={params.patient_id} />
                     <Odontogram patient_id={params.patient_id} />
                 </div>
             </div>
-            <Modal open={open} onClose={() => setOpen(false)}>
+            <Modal title={"Information"} open={open} onClose={() => setOpen(false)}>
                 <h1>Information</h1>
             </Modal>
         </div>

@@ -1,17 +1,15 @@
-import { image_attachments, patient_record } from "@prisma/client"
+import { clinic_users, image_attachments, patient_record } from "@prisma/client"
 
 interface pageProps {
     curPatient: patient_record
     images: image_attachments[]
+    doclist: Array<clinic_users>
 }
 
-export default function PatientSummary({ curPatient, images }: pageProps) {
+export default function PatientSummary({ curPatient, images, doclist }: pageProps) {
 
     const image_attch = images.find(elem => elem.attachment_xray === "false")
     const xray_attch = images.find(elem => elem.attachment_xray === "true")
-
-    console.log(image_attch)
-    console.log(xray_attch)
     return (
         <section className="flex flex-col gap-5">
             <div className="title flex text-xl items-center justify-between pl-4 pr-4">

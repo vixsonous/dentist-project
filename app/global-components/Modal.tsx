@@ -7,9 +7,9 @@ type ModalProps = {
     title: String
 }
 
-export default function Modal({open, onClose, children, title}: ModalProps) {
+export default function Modal({ open, onClose, children, title }: ModalProps) {
     return (
-        <div className={`fixed inset-0 flex flex-col justify-center items-center transition-colors ${ open ? 'visible bg-black/20' : 'invisible'}`}>
+        <div className={`fixed inset-0 flex flex-col justify-center items-center transition-colors ${open ? 'visible bg-black/20' : 'invisible'}`}>
             <div className={`bg-white flex w-[50vw] flex-col items-end rounded-md shadow transition-all ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}>
                 <div className="w-full flex p-3 justify-between bg-[#88AB8E]">
                     <span className="text-white">{title}</span>
@@ -19,7 +19,7 @@ export default function Modal({open, onClose, children, title}: ModalProps) {
                         </svg>
                     </button>
                 </div>
-                <div className="w-full p-3">
+                <div className="w-full">
                     {children}
                 </div>
             </div>
