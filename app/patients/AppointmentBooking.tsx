@@ -1,20 +1,18 @@
 import { useState } from "react";
 import Modal from "../global-components/Modal";
 import BookingCalendar from "../global-components/BookingCalendar";
-import { clinic_users } from "@prisma/client";
+import { clinic_users, patient_record } from "@prisma/client";
 
 interface pageProps {
+    patientlist: Array<patient_record>
     doclist: Array<clinic_users>
 }
 
-const AppointmentBooking = ({ doclist }: pageProps) => {
+const AppointmentBooking = ({ patientlist, doclist }: pageProps) => {
     const [open, setOpen] = useState(false);
     return (
         <section>
-            <button type="button" onClick={() => setOpen(true)} className="bg-[#F2F1EB] p-3 rounded-lg shadow-xl border-2 hover:bg-[#AFC8AD]">Book an Appointment</button>
-            <Modal title={"Appointment Booking"} open={open} onClose={() => setOpen(false)}>
-                <BookingCalendar doclist={doclist} />
-            </Modal>
+            <BookingCalendar patientlist={patientlist} doclist={doclist} />
         </section>
     );
 }

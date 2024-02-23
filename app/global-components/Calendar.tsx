@@ -167,7 +167,7 @@ export default function Calendar() {
                     {curDays}
                 </div>
             </div>
-            <Modal title={"Scheduled Appointments"} open={open} onClose={() => setOpen(false)}>
+            <Modal title={"Scheduled Appointments"} open={open} onClose={() => setOpen(false)} size="M">
                 <div className="flex flex-col gap-1">
                     <hr />
                     <div className="flex flex-col gap-1">

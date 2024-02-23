@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import Modal from "./Modal";
-import { clinic_users } from "@prisma/client";
+import { clinic_users, patient_record, scheduled_appointments } from "@prisma/client";
 
 type MonthEnum = {
     [key: string]: string
@@ -20,14 +20,18 @@ interface Schedule {
 
 interface DayProps {
     el: number,
-    curDate: Date
+    curDate: Date,
+    month: number,
+    year: number,
+    schedules: Array<scheduled_appointments>
 }
 
 interface pageProps {
+    patientlist: Array<patient_record>
     doclist: Array<clinic_users>
 }
 
-export default function BookingCalendar({ doclist }: pageProps) {
+export default function BookingCalendar({ patientlist, doclist }: pageProps) {
 
     const [curDays, setCurDays] = useState(
         <>
@@ -42,119 +46,15 @@ export default function BookingCalendar({ doclist }: pageProps) {
 
     const [docList, setDocList] = useState(doclist);
     const [curMonth, setCurMonth] = useState(new Date().getMonth() + 1);
-    const [curYr, setCurYr] = useState(new Date().getFullYear());
+    const [curYr, setCurYr] = useState(new Date().getFullYear()); 4
 
-    const Day = ({ el, curDate }: DayProps) => {
-        const [curOpn, setCurOpn] = useState(false);
+    const getSchedules = async (month: string, year: string) => {
+        const scheds = await fetch(`/api/get-appointment/?month=${month}&year=${year}`).then((res) => res.json())
 
-        return (
-            <>
-                <a onClick={() => setCurOpn(!curOpn)} href="#" className={`dayEl ${(el + 1) === new Date().getDate() && curDate.getMonth() === new Date().getMonth() ? 'hover:bg-[#12372A] rounded-md p-2 bg-[#436850] text-white' : 'hover:bg-[#AFC8AD] rounded-md p-2'}`}>{el + 1}</a>
-                <Modal title={"Schedule"} open={curOpn} onClose={() => setCurOpn(false)}>
-                    <div className="flex flex-col p-2  ">
-                        <div className="h-[20rem] flex overflow-scroll">
-                            <div className="p-2 w-[100px] flex flex-col">
-                                <div className="w-full"></div>
-                                {
-                                    [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b).map((n, idx) => {
-                                        return (
-                                            <span key={idx} className="p-2 w-[100px]">{idx % 2 === 0 ? `${n}:00` : `${n}:30`}</span>
-                                        )
-                                    })
-                                }
-                            </div>
-                            {
-                                docList.map((doc, idx1) => {
-                                    const arr: HTMLDivElement[] | null[] = [];
-                                    const elRefs = useRef(arr);
-                                    const [selectionActive, setSelectionActive] = useState(false);
-                                    const [selectedTime, setSelectedTime] = useState({ start: 0, end: 0 });
-
-                                    const selectTime = (n: number, setConf: Dispatch<SetStateAction<boolean>>) => {
-                                        // if refs is 0, use elRefs. if refs is 1, use elHalfRefs
-
-                                        elRefs.current[n]?.classList.add("bg-blue-500")
-                                        setSelectedTime(prev => ({ ...prev, start: n }))
-
-                                        for (let i = 0; i < elRefs.current.length; i++) {
-                                            if (elRefs.current[i]?.classList.contains("bg-blue-300")) {
-                                                elRefs.current[i]?.classList.add("bg-blue-500");
-                                                elRefs.current[i]?.classList.add("border-blue-500");
-
-                                            }
-                                        }
-
-                                        if (selectionActive && n === selectedTime.start) {
-                                            elRefs.current[n]?.classList.remove("bg-blue-500")
-                                        }
-
-                                        if (selectionActive && n !== selectedTime.start) {
-                                            console.log("start " + selectedTime.start + " end " + n)
-                                            setConf(true);
-                                        }
-
-                                        setSelectionActive(prev => !prev);
-                                    }
-
-                                    const hoverTime = (n: number, refs: number) => {
-
-                                        for (let i = 0; i < elRefs.current.length; i++) {
-                                            elRefs.current[i]?.classList.remove("bg-blue-300");
-                                        }
-                                        elRefs.current[n]?.classList.add("bg-blue-300");
-
-                                        if (selectionActive) {
-                                            for (let i = 0; i < elRefs.current.length; i++) {
-                                                elRefs.current[i]?.classList.remove("bg-blue-300");
-                                            }
-
-                                            for (let i = selectedTime.start; i <= n; i++) {
-                                                elRefs.current[i]?.classList.add("bg-blue-300");
-                                            }
-                                        }
-
-
-                                    }
-
-                                    const clearHover = () => {
-                                        for (let i = 0; i < elRefs.current.length; i++) {
-                                            elRefs.current[i]?.classList.remove("bg-blue-300");
-                                        }
-                                    }
-
-                                    return (
-                                        <div key={idx1} className="flex p-2 flex-col">
-                                            {
-                                                [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b).map((n, idx2) => {
-                                                    const [conf, setConf] = useState(false);
-                                                    return (
-                                                        <div className="w-[100px] h-full relative" key={idx2}>
-                                                            <div className="flex">
-                                                                <div>
-                                                                    <div className={`selector h-[40px] w-[100px] p-2 border border-solid border-blue-300`} aria-disabled id={`${idx1}${idx2}`} onMouseLeave={clearHover} onMouseOver={() => hoverTime(idx2, 0)} onClick={() => selectTime(idx2, setConf)} ref={el => elRefs.current[idx2] = el}>&#8203;</div>
-                                                                </div>
-                                                                <hr />
-                                                            </div>
-
-                                                            <div className={`p-5 absolute bg-white right-0 top-0 ${conf ? 'visible' : 'invisible'}`}>
-                                                                asd
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                </Modal>
-            </>
-        )
+        return scheds.responseBody;
     }
 
-    const changeDt = (curM: SetStateAction<number>, curY: SetStateAction<number>) => {
+    const changeDt = async (curM: number, curY: number) => {
         const beforeDt = new Date(curYr, curMonth, 0);
         setCurMonth(curM);
         setCurYr(curY);
@@ -168,6 +68,9 @@ export default function BookingCalendar({ doclist }: pageProps) {
         let beforeDaysEl = Array.from(Array(strtDay + 1).keys());
         let remaining = Array.from(Array(42 - (daysEl.length + beforeDaysEl.length)).keys());
 
+        const scheds = await getSchedules(String(curM), String(curY));
+
+        console.log(scheds)
         setCurDays(
             <>
                 {
@@ -179,7 +82,7 @@ export default function BookingCalendar({ doclist }: pageProps) {
                     daysEl.map((el, idx) => {
 
                         return (
-                            <Day key={idx} el={el} curDate={curDate} />
+                            <Day key={idx} el={el} curDate={curDate} month={curM} year={curY} schedules={[]} />
                         )
                     })
                 }
@@ -191,6 +94,275 @@ export default function BookingCalendar({ doclist }: pageProps) {
             </>
         )
     }
+
+    const setAppointment = async (patient_id: string, doctor_id: string, start_time: string, end_time: string, date: string, m: string, y: string) => {
+        interface timeMap {
+            [key: string]: string
+        }
+        const timePlot: timeMap = {
+            "0": "0:00",
+            "1": "0:30",
+            "2": "1:00",
+            "3": "1:30",
+            "4": "2:00",
+            "5": "2:30",
+            "6": "3:00",
+            "7": "3:30",
+            "8": "4:00",
+            "9": "4:30",
+            "10": "5:00",
+            "11": "5:30",
+            "12": "6:00",
+            "13": "6:30",
+            "14": "7:00",
+            "15": "7:30",
+            "16": "8:00",
+            "17": "8:30",
+            "18": "9:00",
+            "19": "9:30",
+            "20": "10:00",
+            "21": "10:30",
+            "22": "11:00",
+            "23": "11:30",
+            "24": "12:00",
+            "25": "12:30",
+            "26": "13:00",
+            "27": "13:30",
+            "28": "14:00",
+            "29": "14:30",
+            "30": "15:00",
+            "31": "15:30",
+            "32": "16:00",
+            "33": "16:30",
+            "34": "17:00",
+            "35": "17:30",
+            "36": "18:00",
+            "37": "18:30",
+            "38": "19:00",
+            "39": "19:30",
+            "40": "20:00",
+            "41": "20:30",
+            "42": "21:00",
+            "43": "21:30",
+            "44": "22:00",
+            "45": "22:30",
+            "46": "23:00",
+            "47": "23:30",
+        }
+
+        // pid = patient_id, did = doctor_id, st = start_time, et = end_time
+
+        return await fetch(`/api/set-appointment/?pid=${patient_id}&did=${doctor_id}&st=${timePlot[start_time]}&et=${timePlot[end_time]}&d=${y}-${String(m).padStart(2, '0')}-${String(date).padStart(2, '0')}`).then((res) => res.json())
+    }
+
+    const setSched = async (patient_id: string, doctor_id: string, start_time: string, end_time: string, date: string, m: string, y: string) => {
+        const resVal = await setAppointment(patient_id, doctor_id, start_time, end_time, date, m, y);
+
+        console.log(resVal)
+    }
+
+    interface ScheduleModalMap {
+        curOpn: boolean,
+        setCurOpn: Dispatch<SetStateAction<boolean>>,
+        selectionActive: boolean,
+        selectedTime: { start: number; end: number },
+        setSelectedTime: Dispatch<SetStateAction<{ start: number; end: number; }>>,
+        setPList: Dispatch<SetStateAction<boolean>>,
+        setSelectedDoc: Dispatch<SetStateAction<number>>,
+        setSelectionActive: Dispatch<SetStateAction<boolean>>,
+    }
+
+    const ScheduleModal = ({
+        curOpn,
+        setCurOpn,
+        selectionActive,
+        selectedTime,
+        setSelectedTime,
+        setPList,
+        setSelectedDoc,
+        setSelectionActive,
+    }: ScheduleModalMap) => {
+
+        return (
+            <Modal title={"Schedule"} open={curOpn} onClose={() => {
+                setCurOpn(false);
+            }} size="M">
+                <div className="flex flex-col p-2  ">
+                    <div className="h-[20rem] flex overflow-scroll">
+                        <div className="p-2 w-[100px] flex flex-col">
+                            <div className="w-full"></div>
+                            {
+                                [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b).map((n, idx) => {
+                                    return (
+                                        <span key={idx} className="p-2 w-[100px]">{idx % 2 === 0 ? `${n}:00` : `${n}:30`}</span>
+                                    )
+                                })
+                            }
+                        </div>
+                        {
+                            docList.map((doc, idx1) => {
+                                const arr: HTMLDivElement[] | null[] = [];
+                                const elRefs = useRef(arr);
+
+                                const selectTime = (n: number) => {
+                                    // if refs is 0, use elRefs. if refs is 1, use elHalfRefs
+                                    if (elRefs.current[n]?.classList.contains("bg-[#436850]")) {
+                                        return;
+                                    }
+
+                                    elRefs.current[n]?.classList.add("bg-[#436850]")
+
+                                    for (let i = 0; i < elRefs.current.length; i++) {
+                                        if (elRefs.current[i]?.classList.contains("bg-[#AFC8AD]")) {
+                                            elRefs.current[i]?.classList.add("bg-[#436850]");
+                                            elRefs.current[i]?.classList.add("border-[#436850]");
+
+                                        }
+                                    }
+
+                                    if (selectionActive && n === selectedTime.start) {
+                                        elRefs.current[n]?.classList.remove("bg-[#436850]")
+                                    }
+
+                                    if (selectionActive && n !== selectedTime.start) {
+                                        setSelectedTime(prev => ({ ...prev, end: n }))
+                                        setPList(true);
+                                        setSelectedDoc(doc.user_id);
+                                    }
+
+                                    if (!selectionActive) {
+                                        setSelectedTime(prev => ({ ...prev, start: n }))
+                                    }
+
+                                    setSelectionActive(prev => !prev);
+                                }
+
+                                const hoverTime = (n: number, refs: number) => {
+
+                                    for (let i = 0; i < elRefs.current.length; i++) {
+                                        elRefs.current[i]?.classList.remove("bg-[#AFC8AD]");
+                                    }
+
+                                    if (!elRefs.current[n]?.classList.contains("bg-[#436850]")) {
+                                        elRefs.current[n]?.classList.add("bg-[#AFC8AD]");
+                                    }
+
+                                    if (selectionActive) {
+                                        for (let i = 0; i < elRefs.current.length; i++) {
+                                            elRefs.current[i]?.classList.remove("bg-[#AFC8AD]");
+                                        }
+
+                                        for (let i = selectedTime.start + 1; i <= n; i++) {
+                                            elRefs.current[i]?.classList.add("bg-[#AFC8AD]");
+                                        }
+                                    }
+
+
+                                }
+
+                                const clearHover = () => {
+                                    for (let i = 0; i < elRefs.current.length; i++) {
+                                        elRefs.current[i]?.classList.remove("bg-[#AFC8AD]");
+                                    }
+                                }
+
+                                return (
+                                    <div key={idx1} className="flex p-2 flex-col">
+                                        {
+                                            [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b).map((n, idx2) => {
+                                                return (
+                                                    <div className="w-[100px] h-full relative" key={idx2}>
+                                                        <div className="flex">
+                                                            <div>
+                                                                <div className={`selector h-[40px] w-[100px] p-2 border border-solid border-[#AFC8AD]`} aria-disabled id={`${idx1}${idx2}`} onMouseLeave={clearHover} onMouseOver={() => hoverTime(idx2, 0)} onClick={() => selectTime(idx2)} ref={el => elRefs.current[idx2] = el}>&#8203;</div>
+                                                            </div>
+                                                            <hr />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </Modal>
+        )
+    }
+
+    interface PatientsModalMap {
+        pList: boolean,
+        setPList: Dispatch<SetStateAction<boolean>>,
+        selectedDoc: number,
+        selectedTime: { start: number; end: number },
+        selectionActive: boolean,
+        el: string
+        month: string
+        year: string
+    }
+
+    const PatientsModal = ({ pList, setPList, selectedDoc, selectedTime, el, month, year }: PatientsModalMap) => {
+        return (
+            <Modal title="Patients" open={pList} onClose={() => setPList(false)} size="S">
+                <div className="p-2 overflow-scroll h-[300px]">
+                    {
+                        patientlist.map((p) => {
+
+                            return (
+                                <div key={p.patient_id}>
+                                    <h1 onClick={() => setSched(String(p.patient_id), String(selectedDoc), String(selectedTime.start), String(selectedTime.end), `${el}`, month, year)} className="p-1 text-left" >{p.patient_name}</h1>
+                                    <hr />
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </Modal>
+        )
+    }
+
+
+
+    const Day = ({ el, curDate, month, year, schedules }: DayProps) => {
+        const [curOpn, setCurOpn] = useState(false);
+        const [pList, setPList] = useState(false);
+
+        const [selectionActive, setSelectionActive] = useState(false);
+        const [selectedTime, setSelectedTime] = useState({ start: 0, end: 0 });
+
+        const [selectedDoc, setSelectedDoc] = useState(0);
+        return (
+            <>
+                <a onClick={() => {
+                    setCurOpn(!curOpn)
+                }} href="#" className={`dayEl ${(el + 1) === new Date().getDate() && curDate.getMonth() === new Date().getMonth() ? 'hover:bg-[#12372A] rounded-md p-2 bg-[#436850] text-white' : 'hover:bg-[#AFC8AD] rounded-md p-2'}`}>{el + 1}</a>
+                <ScheduleModal
+                    curOpn={curOpn}
+                    setCurOpn={setCurOpn}
+                    selectionActive={selectionActive}
+                    setSelectedTime={setSelectedTime}
+                    selectedTime={selectedTime}
+                    setPList={setPList}
+                    setSelectedDoc={setSelectedDoc}
+                    setSelectionActive={setSelectionActive}
+                />
+                <PatientsModal
+                    pList={pList}
+                    setPList={setPList}
+                    selectedDoc={selectedDoc}
+                    selectedTime={selectedTime}
+                    selectionActive={selectionActive}
+                    el={String(el + 1)}
+                    month={String(month)}
+                    year={String(year)}
+                />
+            </>
+        )
+    }
+
+
 
     useEffect(() => {
         changeDt(curMonth, curYr);
@@ -245,6 +417,7 @@ export default function BookingCalendar({ doclist }: pageProps) {
                     {curDays}
                 </div>
             </div>
+
         </>
     )
 }

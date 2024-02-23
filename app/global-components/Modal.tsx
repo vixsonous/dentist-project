@@ -4,13 +4,23 @@ type ModalProps = {
     open: boolean,
     onClose: MouseEventHandler<HTMLButtonElement>,
     children: ReactElement,
-    title: String
+    title: String,
+    size: string
 }
 
-export default function Modal({ open, onClose, children, title }: ModalProps) {
+export default function Modal({ open, onClose, children, title, size }: ModalProps) {
+    interface sizeInt {
+        [key: string]: string
+    }
+    const sizearr: sizeInt = {
+        "S": "w-[200px]",
+        "M": "w-[50vw]",
+        "L": "w-[75vw]",
+    }
+
     return (
         <div className={`fixed inset-0 flex flex-col justify-center items-center transition-colors ${open ? 'visible bg-black/20' : 'invisible'}`}>
-            <div className={`bg-white flex w-[50vw] flex-col items-end rounded-md shadow transition-all ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}>
+            <div className={`bg-white flex ${sizearr[size]} flex-col items-end rounded-md shadow transition-all ${open ? 'scale-100 opacity-100' : 'scale-125 opacity-0'}`}>
                 <div className="w-full flex p-3 justify-between bg-[#88AB8E]">
                     <span className="text-white">{title}</span>
                     <button className="text-black" onClick={onClose}>

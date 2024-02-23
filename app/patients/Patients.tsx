@@ -156,10 +156,7 @@ export default function Patients({ patient_list, doctor_list }: pageProps) {
                 </section>
                 <section className=" flex flex-col gap-5">
                     <div className="h-96 rounded-lg">
-                        <Calendar />
-                    </div>
-                    <div>
-                        <AppointmentBooking doclist={doctor_list} />
+                        <AppointmentBooking patientlist={patient_list} doclist={doctor_list} />
                     </div>
                 </section>
             </div>
