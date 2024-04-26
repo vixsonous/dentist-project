@@ -23,7 +23,7 @@ interface DayProps {
     curDate: Date,
     month: number,
     year: number,
-    schedules: Array<scheduled_appointments>
+    schedules: boolean[][][]
 }
 
 interface pageProps {
@@ -46,12 +46,24 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
 
     const [docList, setDocList] = useState(doclist);
     const [curMonth, setCurMonth] = useState(new Date().getMonth() + 1);
-    const [curYr, setCurYr] = useState(new Date().getFullYear()); 4
+    const [curYr, setCurYr] = useState(new Date().getFullYear());
+
+
+    const [schedArr, setSchedArr] = useState(Array());
 
     const getSchedules = async (month: string, year: string) => {
         const scheds = await fetch(`/api/get-appointment/?month=${month}&year=${year}`).then((res) => res.json())
 
         return scheds.responseBody;
+    }
+
+    const processScheds = (scheds: Array<scheduled_appointments>, date: string) => {
+
+        let newArray = scheds.filter((sc) => {
+            return sc.date_of_appointment.toString().split("T")[0] === date ? { ...sc, date_of_appointment: sc.date_of_appointment.toString().split("T")[0], start_time: sc.start_time.toString().split("T")[1].split(".")[0], end_time: sc.end_time.toString().split("T")[1].split(".")[0] } : null
+        });
+
+        return newArray;
     }
 
     const changeDt = async (curM: number, curY: number) => {
@@ -68,9 +80,31 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
         let beforeDaysEl = Array.from(Array(strtDay + 1).keys());
         let remaining = Array.from(Array(42 - (daysEl.length + beforeDaysEl.length)).keys());
 
+        let array = Array.from(Array(noDays).keys());
+        // setSchedArr()
+
         const scheds = await getSchedules(String(curM), String(curY));
 
-        console.log(scheds)
+        let carray = array.map(el => {
+            let a = Array.from(docList);
+
+            let b = processScheds(scheds, `${curY}-${String(curM).padStart(2, '0')}-${String(el + 1).padStart(2, '0')}`);
+
+            let c = b.map(sc => {
+                return { ...sc, date_of_appointment: sc.date_of_appointment.toString().split("T")[0], start_time: sc.start_time.toString().split("T")[1].split(".")[0], end_time: sc.end_time.toString().split("T")[1].split(".")[0] }
+            });
+
+            let arr = [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b);
+
+            let temp = a.map((doc, idx) => {
+                return arr.map((n, idx) => {
+                    return c.filter(c => doc.user_id === c.doc_id && c.start_time <= `${idx % 2 === 0 ? `${String(n).padStart(2, '0')}:00:00` : `${String(n).padStart(2, '0')}:30:00`}` && c.end_time >= `${idx % 2 === 0 ? `${String(n).padStart(2, '0')}:00:00` : `${String(n).padStart(2, '0')}:30:00`}`).length > 0 ? true : false;
+                });
+            });
+
+            return [...temp]
+        });
+
         setCurDays(
             <>
                 {
@@ -82,7 +116,7 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
                     daysEl.map((el, idx) => {
 
                         return (
-                            <Day key={idx} el={el} curDate={curDate} month={curM} year={curY} schedules={[]} />
+                            <Day key={idx} el={el} curDate={curDate} month={curM} year={curY} schedules={carray} />
                         )
                     })
                 }
@@ -170,6 +204,8 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
         setPList: Dispatch<SetStateAction<boolean>>,
         setSelectedDoc: Dispatch<SetStateAction<number>>,
         setSelectionActive: Dispatch<SetStateAction<boolean>>,
+        day: number,
+        schedules: boolean[][][]
     }
 
     const ScheduleModal = ({
@@ -181,6 +217,8 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
         setPList,
         setSelectedDoc,
         setSelectionActive,
+        day,
+        schedules
     }: ScheduleModalMap) => {
 
         return (
@@ -270,11 +308,12 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
                                     <div key={idx1} className="flex p-2 flex-col">
                                         {
                                             [...Array(24).keys(), ...Array(24).keys()].sort((a, b) => a - b).map((n, idx2) => {
+                                                const flag = schedules[day] && schedules[day][idx1][idx2];
                                                 return (
                                                     <div className="w-[100px] h-full relative" key={idx2}>
                                                         <div className="flex">
                                                             <div>
-                                                                <div className={`selector h-[40px] w-[100px] p-2 border border-solid border-[#AFC8AD]`} aria-disabled id={`${idx1}${idx2}`} onMouseLeave={clearHover} onMouseOver={() => hoverTime(idx2, 0)} onClick={() => selectTime(idx2)} ref={el => elRefs.current[idx2] = el}>&#8203;</div>
+                                                                <div className={`selector h-[40px] w-[100px] ${flag ? 'bg-[#436850]' : null} p-2 border border-solid border-[#AFC8AD]`} aria-disabled id={`${idx1}${idx2}`} onMouseLeave={clearHover} onMouseOver={() => hoverTime(idx2, 0)} onClick={() => selectTime(idx2)} ref={el => elRefs.current[idx2] = el}>&#8203;</div>
                                                             </div>
                                                             <hr />
                                                         </div>
@@ -333,6 +372,7 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
         const [selectedTime, setSelectedTime] = useState({ start: 0, end: 0 });
 
         const [selectedDoc, setSelectedDoc] = useState(0);
+
         return (
             <>
                 <a onClick={() => {
@@ -347,6 +387,8 @@ export default function BookingCalendar({ patientlist, doclist }: pageProps) {
                     setPList={setPList}
                     setSelectedDoc={setSelectedDoc}
                     setSelectionActive={setSelectionActive}
+                    day={el}
+                    schedules={schedules}
                 />
                 <PatientsModal
                     pList={pList}

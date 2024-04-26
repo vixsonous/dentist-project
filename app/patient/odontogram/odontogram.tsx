@@ -47,7 +47,7 @@ export default function Odontogram({ patient_id }: pageProps) {
                 }
 
             </div>
-            <Modal title={"Children"} open={open} onClose={onClose}>
+            <Modal size="M" title={"Children"} open={open} onClose={onClose}>
                 {children}
             </Modal>
         </div>

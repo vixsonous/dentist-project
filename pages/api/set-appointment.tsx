@@ -29,6 +29,7 @@ export default async function SetAppointment(req: NextApiRequest, res: NextApiRe
             date_of_appointment: new Date(String(d)),
             start_time: stDate,
             end_time: etDate,
+            doc_id: Number(did),
             waitlist: scheduled_appointments_waitlist.true,
             event: 'tooth_extract'
         }

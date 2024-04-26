@@ -1,4 +1,5 @@
 import { clinic_users, image_attachments, patient_record } from "@prisma/client"
+import { useState } from "react"
 
 interface pageProps {
     curPatient: patient_record
@@ -10,6 +11,32 @@ export default function PatientSummary({ curPatient, images, doclist }: pageProp
 
     const image_attch = images.find(elem => elem.attachment_xray === "false")
     const xray_attch = images.find(elem => elem.attachment_xray === "true")
+
+    const [states, setStates] = useState({
+        attachment: '',
+        xray: ''
+    })
+
+    const FileOnchange = async (files: FileList | null, type: string) => {
+
+        if (files === null) return;
+
+        const filename = files[0].name
+
+        if (type === "xray") setStates(state => ({ ...state, xray: filename }));
+
+        if (type === "attachment") setStates(state => ({ ...state, attachment: filename }));
+
+        const form = new FormData();
+        form.append('file', files[0]);
+
+        const res = await fetch(`/api/patient-image-upload`, {
+            method: "POST",
+            body: form
+        }).then((res) => res.json());
+
+        console.log(res);
+    }
     return (
         <section className="flex flex-col gap-5">
             <div className="title flex text-xl items-center justify-between pl-4 pr-4">
@@ -184,10 +211,10 @@ export default function PatientSummary({ curPatient, images, doclist }: pageProp
                                     <p>{image_attch.image_url}</p>
                                 ) : (
                                     <div className="flex flex-col gap-1">
-                                        <p className="flex justify-end">No Image attachment</p>
+                                        <p className="flex justify-end">{states.attachment === "" ? "No Image attachment" : states.attachment}</p>
                                         <div>
-                                            <label htmlFor="files" className="btn p-1 border border-1 border-black rounded">Select Image</label>
-                                            <input className="hidden" id="files" type="file" />
+                                            <label htmlFor="file1" className="btn p-1 border border-1 border-black rounded">Select Image</label>
+                                            <input className="hidden" onChange={(event) => FileOnchange(event.currentTarget.files, "attachment")} id="file1" type="file" />
                                         </div>
 
                                     </div>
@@ -201,10 +228,10 @@ export default function PatientSummary({ curPatient, images, doclist }: pageProp
                                     <p>{xray_attch.image_url}</p>
                                 ) : (
                                     <div className="flex flex-col gap-1">
-                                        <p className="flex justify-end">No X-Ray attachment</p>
+                                        <p className="flex justify-end">{states.xray === "" ? "No X-Ray attachment" : states.xray}</p>
                                         <div>
-                                            <label htmlFor="files" className="btn p-1 border border-1 border-black rounded">Select Image</label>
-                                            <input className="hidden" id="files" type="file" />
+                                            <label htmlFor="file2" className="btn p-1 border border-1 border-black rounded">Select Image</label>
+                                            <input className="hidden" onChange={(event) => FileOnchange(event.currentTarget.files, "xray")} id="file2" type="file" />
                                         </div>
 
                                     </div>
